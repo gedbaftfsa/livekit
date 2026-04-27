@@ -99,8 +99,10 @@ func startServer(c *cli.Context) error {
 	}
 
 	sigChan := make(chan os.Signal, 1)
-	// Also handle SIGHUP for potential future config reload support.
-	signal.Notify(sigChan, syscall.SIGINT, syscall.SIGTERM, syscall.SIGQUIT, syscall.SIGHUP)
+	// Handle SIGINT, SIGTERM, and SIGQUIT for graceful shutdown.
+	// Note: removed SIGHUP here since we don't actually support config reload yet;
+	// catching it was causing the server to shut down unexpectedly on terminal hang-up.
+	signal.Notify(sigChan, syscall.SIGINT, syscall.SIGTERM, syscall.SIGQUIT)
 
 	go func() {
 		sig := <-sigChan
