@@ -107,7 +107,7 @@ func startServer(c *cli.Context) error {
 	go func() {
 		sig := <-sigChan
 		// Log which signal triggered the shutdown so it's easier to diagnose
-		// unexpected restarts in production logs.
+		// unexpected restarts in production (e.g. SIGQUIT from container runtime).
 		logger.GetLogger().Infow("received signal, shutting down", "signal", sig)
 		server.Stop(false)
 	}()
